@@ -13,16 +13,14 @@ const nav = [
         <span class="text-pn-fg-bright">basic<span class="text-pn-accent">automation</span></span>
       </NuxtLink>
 
-      <nav class="ml-auto flex items-center gap-4 text-xs sm:gap-5">
+      <nav class="ml-auto flex items-center gap-5 text-xs sm:gap-6">
         <NuxtLink
           v-for="item in nav"
           :key="item.to"
           :to="item.to"
           class="text-pn-muted transition-colors hover:text-pn-fg-bright"
         >
-          <span aria-hidden="true" class="text-pn-rule">[</span>{{ item.label }}<span
-            aria-hidden="true" class="text-pn-rule"
-          >]</span>
+          {{ item.label }}
         </NuxtLink>
         <a
           href="https://github.com/basic-automation"
@@ -30,14 +28,9 @@ const nav = [
           rel="noreferrer noopener"
           class="text-pn-muted transition-colors hover:text-pn-fg-bright"
         >
-          <span aria-hidden="true" class="text-pn-rule">[</span>github<span
-            aria-hidden="true" class="text-pn-rule"
-          >]</span>
+          github
         </a>
       </nav>
-    </div>
-    <div aria-hidden="true" class="mx-auto max-w-4xl px-5 sm:px-6">
-      <div class="rule-dashed" />
     </div>
   </header>
 </template>

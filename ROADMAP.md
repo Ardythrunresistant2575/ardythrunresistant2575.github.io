@@ -1,0 +1,46 @@
+# basicautomation.io — roadmap
+
+A pure phase-ordered task queue. Every item is a `[ ]` or `[x]` checkbox. Done
+or to-do, nothing else: shipped consumer-facing capability becomes a feature in
+`README.md`, everything not-done goes here, and git history plus the PRs are the
+record. There is no run log.
+
+## Phase 0 — Foundations ✅
+
+- [x] Nuxt 4 + Tailwind v4 + Paleday Tailwind theme, flat terminal design language
+- [x] Server-rendered pages with live GitHub + crates.io data, Nitro-cached
+- [x] Committed fallback snapshot so an upstream outage can't take the site down
+- [x] Per-project marketing pages: hero, why, features, worked example, folded README
+- [x] Self-hosted Fira Code, org logo, favicons, Open Graph card
+- [x] Container image + DeepStack service + Caddy route for the apex domain
+
+## Phase 1 — Content
+
+- [ ] Per-project Open Graph cards instead of one shared org card
+- [ ] Syntax highlighting for the worked examples (Shiki at build time, not in the client bundle)
+- [ ] A short changelog strip per project, from the GitHub releases API
+- [ ] Copy pass on `data/projects.ts` for Nisaba and Skidbladnir — both are thinner than the two crates
+- [ ] Screenshots for the two desktop apps; the pages are all type right now
+
+## Phase 2 — Discovery
+
+- [ ] `sitemap.xml` and `robots.txt`
+- [ ] JSON-LD `SoftwareSourceCode` per project page
+- [ ] RSS/Atom feed of releases across the org
+
+## Phase 3 — Operations
+
+- [ ] Ship `GITHUB_TOKEN` to the container so the rate limit stops being a factor
+- [ ] Structured request logging, and a `status` page fed by `/healthz`
+- [ ] Alert when the site has been serving from the fallback snapshot for more than an hour
+- [ ] Trim the image: the runtime layer is still a full `node:24-alpine`
+
+## Phase 4 — Reach
+
+- [ ] Serve the site as a Tor onion service too, via `onyums` — the org's own crate, on the org's own site
+- [ ] Decide what happens to `basic-automation.github.io`, which still serves the old page
+
+## Cross-cutting
+
+- [ ] Accessibility pass: focus order, contrast against the parchment ground, reduced-motion (partially done)
+- [ ] A real 404 check: every internal link, every render, on every route

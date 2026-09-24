@@ -1,0 +1,192 @@
+/**
+ * Live project data, fetched at request time and cached.
+ *
+ * Every page is rendered per request, but GitHub's anonymous API allows 60
+ * requests an hour — so the upstream calls sit behind Nitro's cache and the
+ * rendered HTML reads from that. A visitor always gets freshly rendered markup;
+ * the numbers inside it are at most `CACHE_TTL` old.
+ *
+ * If GitHub or crates.io is unreachable, `data/projects.generated.json` — the
+ * snapshot committed by `npm run sync` — is served instead, so an upstream
+ * outage degrades the numbers rather than the site.
+ */
+
+import { Marked } from 'marked'
+import { projects, type Project } from '~~/data/projects'
+import type { EnrichedProject, RepoMeta } from '~~/shared/types/project'
+import snapshot from '~~/data/projects.generated.json'
+
+const ORG = 'basic-automation'
+const UA = 'basicautomation.io'
+
+/** How long upstream responses are reused. Short enough to feel live. */
+const CACHE_TTL = 60 * 15 // 15 minutes
+/** Serve stale while revalidating for this much longer, so no visitor waits. */
+const STALE_TTL = 60 * 60 * 6 // 6 hours
+
+export type { RepoMeta, EnrichedProject } from '~~/shared/types/project'
+
+const snapshotRepos = (snapshot as { repos: Record<string, Omit<RepoMeta, 'source'>> }).repos ?? {}
+
+const marked = new Marked({ gfm: true, breaks: false, async: false })
+
+function token(): string {
+  const config = useRuntimeConfig()
+  return (config.githubToken as string) || ''
+}
+
+async function gh<T>(
+  path: string,
+  accept = 'application/vnd.github+json',
+  /**
+   * GitHub serves raw files as `application/vnd.github.raw`, which ofetch reads
+   * as a JSON media type and quietly parses into `{}`. Anything not returning
+   * real JSON has to say so explicitly.
+   */
+  responseType: 'json' | 'text' = 'json',
+): Promise<T> {
+  const headers: Record<string, string> = { 'user-agent': UA, accept }
+  const t = token()
+  if (t) headers.authorization = `Bearer ${t}`
+  return $fetch(`https://api.github.com${path}`, {
+    headers,
+    timeout: 8000,
+    responseType: responseType as 'json',
+  }) as Promise<T>
+}
+
+/**
+ * READMEs address their own repo with relative paths. Rewrite them to absolute
+ * URLs — raw.githubusercontent for images, the blob view for links.
+ */
+function absolutize(markdown: string, repo: string, branch: string): string {
+  const raw = `https://raw.githubusercontent.com/${ORG}/${repo}/${branch}/`
+  const blob = `https://github.com/${ORG}/${repo}/blob/${branch}/`
+  const isRelative = (u: string) => u && !/^([a-z]+:)?\/\//i.test(u) && !u.startsWith('#') && !u.startsWith('data:')
+  const clean = (u: string) => u.replace(/^\.\//, '').replace(/^\//, '')
+
+  return markdown
+    .replace(/(!\[[^\]]*\]\()([^)\s]+)(\)|\s)/g, (m, head, url, tail) =>
+      isRelative(url) ? `${head}${raw}${clean(url)}${tail}` : m)
+    .replace(/(?<!!)(\[[^\]]*\]\()([^)\s]+)(\)|\s)/g, (m, head, url, tail) =>
+      isRelative(url) ? `${head}${blob}${clean(url)}${tail}` : m)
+    .replace(/(<img\b[^>]*?\bsrc=["'])([^"']+)(["'])/gi, (m, head, url, tail) =>
+      isRelative(url) ? `${head}${raw}${clean(url)}${tail}` : m)
+}
+
+/** The page prints its own title and tagline; don't repeat the README's logo. */
+function stripLeadingLogo(markdown: string): string {
+  return markdown
+    .replace(/^\s*!\[[^\]]*\]\([^)]*(?:logo|banner)[^)]*\)\s*/i, '')
+    .replace(/^(?:\s*<br\s*\/?>\s*)+/i, '')
+}
+
+async function fetchRepo(project: Project): Promise<RepoMeta> {
+  const { repo } = project
+
+  const meta = await gh<any>(`/repos/${ORG}/${repo}`)
+  const defaultBranch: string = meta.default_branch || 'main'
+
+  const out: RepoMeta = {
+    repo,
+    fetchedAt: new Date().toISOString(),
+    source: 'live',
+    description: meta.description ?? null,
+    htmlUrl: meta.html_url,
+    homepage: meta.homepage || null,
+    language: meta.language ?? null,
+    topics: meta.topics ?? [],
+    stars: meta.stargazers_count ?? 0,
+    forks: meta.forks_count ?? 0,
+    openIssues: meta.open_issues_count ?? 0,
+    license:
+      meta.license?.spdx_id && meta.license.spdx_id !== 'NOASSERTION'
+        ? meta.license.spdx_id
+        : null,
+    defaultBranch,
+    createdAt: meta.created_at,
+    pushedAt: meta.pushed_at,
+    archived: !!meta.archived,
+    readmeHtml: null,
+    latestRelease: null,
+  }
+
+  // README, latest release and crate data are all optional — a failure in any
+  // one of them leaves that field empty rather than sinking the whole repo.
+  const [readme, release, crate] = await Promise.allSettled([
+    gh<string>(`/repos/${ORG}/${repo}/readme`, 'application/vnd.github.raw', 'text'),
+    gh<any>(`/repos/${ORG}/${repo}/releases/latest`),
+    project.crate
+      ? $fetch<any>(`https://crates.io/api/v1/crates/${project.crate}`, {
+          headers: { 'user-agent': UA },
+          timeout: 8000,
+        })
+      : Promise.reject(new Error('not a crate')),
+  ])
+
+  if (readme.status === 'fulfilled' && typeof readme.value === 'string') {
+    out.readmeHtml = marked.parse(
+      absolutize(stripLeadingLogo(readme.value), repo, defaultBranch),
+    ) as string
+  }
+
+  if (release.status === 'fulfilled' && release.value?.tag_name) {
+    out.latestRelease = {
+      tag: release.value.tag_name,
+      url: release.value.html_url,
+      publishedAt: release.value.published_at,
+    }
+  }
+
+  if (crate.status === 'fulfilled' && crate.value?.crate && project.crate) {
+    out.crateVersion = crate.value.crate.max_stable_version || crate.value.crate.max_version
+    out.crateDownloads = crate.value.crate.downloads ?? 0
+    out.crateUrl = `https://crates.io/crates/${project.crate}`
+    out.docsUrl = `https://docs.rs/${project.crate}`
+  }
+
+  return out
+}
+
+function fromSnapshot(repo: string): RepoMeta | null {
+  const s = snapshotRepos[repo]
+  return s ? { ...s, source: 'snapshot' } : null
+}
+
+/**
+ * Cached across requests by Nitro. `getKey` keeps one entry per repo so a
+ * single slow project page doesn't invalidate the landing page's data.
+ */
+const cachedRepo = defineCachedFunction(
+  async (project: Project): Promise<RepoMeta | null> => {
+    try {
+      return await fetchRepo(project)
+    }
+    catch (err) {
+      console.warn(`[github] ${project.repo} fetch failed, using snapshot:`, (err as Error).message)
+      return fromSnapshot(project.repo)
+    }
+  },
+  {
+    name: 'repo',
+    maxAge: CACHE_TTL,
+    staleMaxAge: STALE_TTL,
+    swr: true,
+    getKey: (project: Project) => project.repo,
+  },
+)
+
+/** Every project, in display order, with live metadata attached. */
+export async function getProjects(): Promise<EnrichedProject[]> {
+  const ordered = [...projects].sort((a, b) => a.order - b.order)
+  return Promise.all(
+    ordered.map(async (p) => ({ ...p, meta: await cachedRepo(p) })),
+  )
+}
+
+/** One project by slug, or null if there is no such slug. */
+export async function getProject(slug: string): Promise<EnrichedProject | null> {
+  const p = projects.find((x) => x.slug === slug)
+  if (!p) return null
+  return { ...p, meta: await cachedRepo(p) }
+}

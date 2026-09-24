@@ -1,0 +1,78 @@
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineNuxtConfig({
+  compatibilityDate: '2026-09-24',
+  devtools: { enabled: false },
+
+  // Every page is rendered on the server, per request. The GitHub and
+  // crates.io calls behind that rendering are cached (see server/utils/github.ts),
+  // so the HTML is always fresh even though upstream is only polled occasionally.
+  ssr: true,
+
+  css: ['~/assets/css/main.css'],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
+  runtimeConfig: {
+    // Optional. Lifts GitHub's anonymous 60 req/hour limit — set GITHUB_TOKEN
+    // (or NUXT_GITHUB_TOKEN) in the container environment.
+    githubToken: '',
+    public: {
+      siteUrl: 'https://basicautomation.io',
+    },
+  },
+
+  app: {
+    head: {
+      htmlAttrs: { lang: 'en' },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'theme-color', content: '#d8d8d0' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' },
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        {
+          rel: 'preload',
+          as: 'font',
+          type: 'font/woff2',
+          href: '/fonts/FiraCode-VF.woff2',
+          crossorigin: 'anonymous',
+        },
+      ],
+    },
+  },
+
+  nitro: {
+    preset: 'node-server',
+
+    // Caddy terminates TLS and proxies in; trust its forwarded headers so
+    // request URLs and client IPs are the real ones.
+    routeRules: {
+      '/**': {
+        headers: {
+          'X-Content-Type-Options': 'nosniff',
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          'X-Frame-Options': 'DENY',
+          'Permissions-Policy': 'geolocation=(), camera=(), microphone=()',
+        },
+      },
+      // Hashed build output is content-addressed and safe to cache forever.
+      '/_nuxt/**': {
+        headers: { 'Cache-Control': 'public, max-age=31536000, immutable' },
+      },
+      '/logo.png': { headers: { 'Cache-Control': 'public, max-age=86400' } },
+      '/og.png': { headers: { 'Cache-Control': 'public, max-age=86400' } },
+      '/favicon.ico': { headers: { 'Cache-Control': 'public, max-age=86400' } },
+      '/favicon-32.png': { headers: { 'Cache-Control': 'public, max-age=86400' } },
+      '/fonts/**': { headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } },
+      '/apple-touch-icon.png': { headers: { 'Cache-Control': 'public, max-age=86400' } },
+    },
+
+    compressPublicAssets: { brotli: true, gzip: true },
+  },
+})

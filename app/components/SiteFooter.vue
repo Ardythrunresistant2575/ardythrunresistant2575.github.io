@@ -1,0 +1,70 @@
+<script setup lang="ts">
+import { sortedProjects } from '~~/data/projects'
+
+// Names and slugs are editorial and identical on every request — no reason to
+// make the footer wait on the GitHub fetch.
+const projects = sortedProjects()
+const year = new Date().getFullYear()
+</script>
+
+<template>
+  <footer class="mx-auto mt-24 w-full max-w-4xl px-5 pb-16 sm:px-6">
+    <div class="rule-dashed" />
+
+    <div class="grid gap-8 pt-8 text-xs sm:grid-cols-3">
+      <div>
+        <div class="flex items-center gap-2.5 text-sm">
+          <BrandMark alt="" class="h-5 w-5 shrink-0" />
+          <span class="text-pn-fg-bright">basic<span class="text-pn-accent">automation</span></span>
+        </div>
+        <p class="mt-3 max-w-[22rem] leading-relaxed text-pn-muted">
+          Software for the productive. Privacy-preserving tools, mostly in Rust,
+          released under open-source licenses.
+        </p>
+      </div>
+
+      <div>
+        <p class="text-pn-muted">
+          projects
+        </p>
+        <ul class="mt-3 space-y-1.5">
+          <li v-for="p in projects" :key="p.slug">
+            <NuxtLink
+              :to="`/projects/${p.slug}`"
+              class="text-pn-dim transition-colors hover:text-pn-fg-bright"
+            >
+              {{ p.name }}
+            </NuxtLink>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-pn-muted">
+          elsewhere
+        </p>
+        <ul class="mt-3 space-y-1.5">
+          <li>
+            <a
+              href="https://github.com/basic-automation"
+              target="_blank" rel="noreferrer noopener"
+              class="text-pn-dim transition-colors hover:text-pn-fg-bright"
+            >github.com/basic-automation</a>
+          </li>
+          <li>
+            <a
+              href="https://crates.io/crates/artiqwest"
+              target="_blank" rel="noreferrer noopener"
+              class="text-pn-dim transition-colors hover:text-pn-fg-bright"
+            >crates.io</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-1.5 text-xs text-pn-muted sm:flex-row sm:justify-between">
+      <span># © {{ year }} basic automation</span>
+      <span># data live from github &amp; crates.io</span>
+    </div>
+  </footer>
+</template>

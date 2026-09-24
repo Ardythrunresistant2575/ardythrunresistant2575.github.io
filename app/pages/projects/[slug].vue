@@ -1,0 +1,173 @@
+<script setup lang="ts">
+const route = useRoute()
+const slug = computed(() => String(route.params.slug))
+
+const { project, error } = await useProject(slug)
+
+if (error.value || !project.value) {
+  throw createError({
+    statusCode: error.value?.statusCode ?? 404,
+    statusMessage: 'No such project',
+    fatal: true,
+  })
+}
+
+const meta = computed(() => project.value?.meta ?? null)
+
+const links = computed(() => {
+  const p = project.value
+  if (!p) return []
+  const m = p.meta
+  const out: { label: string, href: string }[] = [
+    { label: 'source', href: m?.htmlUrl ?? `https://github.com/basic-automation/${p.repo}` },
+  ]
+  if (m?.crateUrl) out.push({ label: 'crates.io', href: m.crateUrl })
+  if (m?.docsUrl) out.push({ label: 'docs', href: m.docsUrl })
+  if (m?.latestRelease) out.push({ label: `release ${m.latestRelease.tag}`, href: m.latestRelease.url })
+  for (const l of p.links ?? []) out.push({ label: l.label.toLowerCase(), href: l.href })
+  return out
+})
+
+/** Kept deliberately small and late: this is a pitch, not a package listing. */
+const facts = computed(() => {
+  const m = meta.value
+  const rows: { label: string, value: string }[] = []
+  if (!m) return rows
+  if (m.crateVersion) rows.push({ label: 'version', value: `v${m.crateVersion}` })
+  else if (m.latestRelease) rows.push({ label: 'release', value: m.latestRelease.tag })
+  if (m.language) rows.push({ label: 'language', value: m.language })
+  if (m.license) rows.push({ label: 'license', value: m.license })
+  if (m.stars) rows.push({ label: 'stars', value: String(m.stars) })
+  if (m.crateDownloads) rows.push({ label: 'downloads', value: compactNumber(m.crateDownloads) })
+  if (m.pushedAt) rows.push({ label: 'updated', value: relativeTime(m.pushedAt) })
+  return rows
+})
+
+useSeoMeta({
+  title: () => `${project.value?.name} — ${project.value?.tagline}`,
+  description: () => project.value?.summary,
+  ogTitle: () => `${project.value?.name} — ${project.value?.hero}`,
+  ogDescription: () => project.value?.summary,
+  ogType: 'article',
+  ogUrl: () => `https://basicautomation.io/projects/${slug.value}`,
+  ogImage: 'https://basicautomation.io/og.png',
+  twitterCard: 'summary_large_image',
+})
+</script>
+
+<template>
+  <article v-if="project" :style="accentVar(project.accent)" class="mx-auto max-w-4xl px-5 sm:px-6">
+    <!-- ── Hero ─────────────────────────────────────────────────────────── -->
+    <header class="pt-12 pb-16 sm:pt-16">
+      <p class="text-xs text-pn-muted">
+        <NuxtLink to="/projects" class="transition-colors hover:text-pn-fg-bright">
+          ../projects
+        </NuxtLink>
+        <span class="text-pn-rule"> / </span>{{ project.slug }}
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <img
+          v-if="project.logo"
+          :src="project.logo"
+          :alt="project.name"
+          class="h-11 w-auto sm:h-14"
+        >
+        <h1 v-else class="text-3xl text-pn-fg-bright sm:text-4xl">
+          {{ project.name }}
+        </h1>
+        <StatusDot :status="project.status" />
+      </div>
+
+      <p class="mt-9 max-w-2xl text-2xl leading-tight text-pn-fg-bright sm:text-4xl">
+        {{ project.hero }}
+      </p>
+
+      <p class="mt-6 max-w-2xl text-sm leading-relaxed text-pn-dim sm:text-base">
+        {{ project.summary }}
+      </p>
+
+      <div v-if="project.install" class="mt-9 max-w-xl">
+        <CodeLine :code="project.install.code" />
+      </div>
+
+      <nav class="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-xs">
+        <a
+          v-for="link in links"
+          :key="link.href"
+          :href="link.href"
+          target="_blank"
+          rel="noreferrer noopener"
+          class="transition-colors hover:text-pn-fg-bright"
+          :style="{ color: 'var(--accent)' }"
+        >→ {{ link.label }}</a>
+      </nav>
+    </header>
+
+    <!-- ── Why ──────────────────────────────────────────────────────────── -->
+    <section class="mb-16">
+      <TermRule label="why" />
+      <p class="mt-7 max-w-2xl text-base leading-relaxed text-pn-fg sm:text-lg">
+        {{ project.problem }}
+      </p>
+    </section>
+
+    <!-- ── Features ─────────────────────────────────────────────────────── -->
+    <section class="mb-16">
+      <TermRule label="what you get" />
+      <div class="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+        <div v-for="feature in project.features" :key="feature.title">
+          <h2 class="text-sm text-pn-fg-bright">
+            <span aria-hidden="true" :style="{ color: 'var(--accent)' }">▸ </span>{{ feature.title }}
+          </h2>
+          <p class="mt-2 text-sm leading-relaxed text-pn-dim">
+            {{ feature.body }}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Example ──────────────────────────────────────────────────────── -->
+    <section v-if="project.example" class="mb-16">
+      <TermRule label="in practice" />
+      <CodeBlock class="mt-8" :code="project.example.code" :label="project.example.label" />
+    </section>
+
+    <!-- ── Facts ────────────────────────────────────────────────────────── -->
+    <section v-if="facts.length" class="mb-16">
+      <TermRule label="at a glance" />
+      <dl class="mt-7 flex flex-wrap gap-x-8 gap-y-2 text-xs">
+        <div v-for="fact in facts" :key="fact.label" class="flex items-baseline gap-2">
+          <dt class="text-pn-muted">
+            {{ fact.label }}
+          </dt>
+          <dd class="text-pn-fg-bright">
+            {{ fact.value }}
+          </dd>
+        </div>
+      </dl>
+      <p v-if="meta?.topics?.length" class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-pn-muted">
+        <span v-for="topic in meta.topics" :key="topic">#{{ topic }}</span>
+      </p>
+    </section>
+
+    <!-- ── README ───────────────────────────────────────────────────────── -->
+    <!-- Folded away: the pitch is above, and the full documentation is long. -->
+    <section v-if="meta?.readmeHtml">
+      <TermRule label="documentation" />
+      <details class="mt-7 group">
+        <summary
+          class="cursor-pointer list-none text-sm text-pn-dim transition-colors hover:text-pn-fg-bright"
+        >
+          <span aria-hidden="true" :style="{ color: 'var(--accent)' }">
+            <span class="group-open:hidden">+</span><span class="hidden group-open:inline">−</span>
+          </span>
+          read the full readme
+        </summary>
+        <!-- First-party content: the repo's own README, rendered at request time. -->
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div class="readme mt-8" v-html="meta.readmeHtml" />
+      </details>
+    </section>
+  </article>
+</template>

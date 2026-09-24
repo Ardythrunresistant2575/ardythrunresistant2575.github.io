@@ -1,0 +1,44 @@
+# The service as it appears in the DeepStack compose project
+# (`compose-linux/infra.yaml`). Kept here so the deployment is reviewable from
+# the repo it deploys.
+#
+# The image is built on the host rather than pulled: the site is small, the
+# build is fast, and it keeps the deploy independent of a registry round-trip.
+# `.github/workflows/release.yml` still publishes to GHCR for anyone else.
+#
+#   docker build -t basicautomation-site:local .
+#   docker compose -f 'docker-compose.linux.yaml' up -d basicautomation-site
+#
+# Caddy terminates TLS for the apex domain and proxies to :3000 over
+# caddy-shared-network, so the container publishes no host port.
+
+services:
+  basicautomation-site:
+    container_name: basicautomation-site
+    image: basicautomation-site:local
+    build:
+      context: .
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ}
+      NODE_ENV: production
+      PORT: "3000"
+      # Optional. Lifts GitHub's anonymous 60 req/hour limit; the site works
+      # without it, falling back to the committed snapshot when throttled.
+      NUXT_GITHUB_TOKEN: ${BASICAUTOMATION_GITHUB_TOKEN:-}
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    labels:
+      # opt in to autoheal — /healthz healthcheck, safe restart
+      autoheal: "true"
+    networks:
+      caddy-shared-network: null
+
+networks:
+  caddy-shared-network:
+    external: true
+    name: caddy-shared-network

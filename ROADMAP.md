@@ -38,6 +38,10 @@ record. There is no run log.
 - [ ] Structured request logging, and a `status` page fed by `/healthz`
 - [ ] Alert when the site has been serving from the fallback snapshot for more than an hour
 - [ ] Trim the image: the runtime layer is still a full `node:24-alpine`
+- [ ] Revisit the type checker: `vue-tsc` does not support TypeScript 7 (it still
+      reaches for `typescript/lib/tsc`, which TS 7 no longer exports), so the
+      project uses Golar via its `golar/unstable` entrypoint — move off `unstable`
+      once a stable one exists, or back to `vue-tsc` once it supports TS 7
 
 ## Phase 4 — Reach
 

@@ -12,6 +12,11 @@
  */
 
 import { Marked } from 'marked'
+// Nitro's `$fetch` carries typed-route overloads for the app's OWN routes;
+// handed an external URL it recurses through every route key and trips the
+// type-instantiation depth limit. These calls go off-site, so use ofetch
+// directly — it is the same client without the internal-route inference.
+import { ofetch } from 'ofetch'
 import { projects, type Project } from '~~/data/projects'
 import type { EnrichedProject, RepoMeta } from '~~/shared/types/project'
 import snapshot from '~~/data/projects.generated.json'
@@ -23,8 +28,6 @@ const UA = 'basicautomation.io'
 const CACHE_TTL = 60 * 15 // 15 minutes
 /** Serve stale while revalidating for this much longer, so no visitor waits. */
 const STALE_TTL = 60 * 60 * 6 // 6 hours
-
-export type { RepoMeta, EnrichedProject } from '~~/shared/types/project'
 
 const snapshotRepos = (snapshot as { repos: Record<string, Omit<RepoMeta, 'source'>> }).repos ?? {}
 
@@ -48,7 +51,7 @@ async function gh<T>(
   const headers: Record<string, string> = { 'user-agent': UA, accept }
   const t = token()
   if (t) headers.authorization = `Bearer ${t}`
-  return $fetch(`https://api.github.com${path}`, {
+  return ofetch(`https://api.github.com${path}`, {
     headers,
     timeout: 8000,
     responseType: responseType as 'json',
@@ -117,7 +120,7 @@ async function fetchRepo(project: Project): Promise<RepoMeta> {
     gh<string>(`/repos/${ORG}/${repo}/readme`, 'application/vnd.github.raw', 'text'),
     gh<any>(`/repos/${ORG}/${repo}/releases/latest`),
     project.crate
-      ? $fetch<any>(`https://crates.io/api/v1/crates/${project.crate}`, {
+      ? ofetch<any>(`https://crates.io/api/v1/crates/${project.crate}`, {
           headers: { 'user-agent': UA },
           timeout: 8000,
         })

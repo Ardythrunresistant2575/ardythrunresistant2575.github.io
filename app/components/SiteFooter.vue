@@ -13,10 +13,7 @@ const year = new Date().getFullYear()
 
     <div class="grid gap-8 pt-8 text-xs sm:grid-cols-3">
       <div>
-        <div class="flex items-center gap-3 text-base">
-          <BrandMark class="h-20 w-20 shrink-0 text-pn-accent" />
-          <span class="text-pn-fg-bright">basic<span class="text-pn-accent">automation</span></span>
-        </div>
+        <BrandMark class="h-20 w-20 shrink-0 text-pn-fg" />
         <p class="mt-3 max-w-[22rem] leading-relaxed text-pn-muted">
           We design and build software tools for businesses. The sharp ones get
           published — mostly Rust, all open source.

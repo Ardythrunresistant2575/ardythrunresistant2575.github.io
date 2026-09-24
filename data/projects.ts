@@ -8,6 +8,13 @@
  *
  * To add a project: add an entry here, drop a logo in public/projects/ if it
  * has one, then run `npm run sync` to refresh the offline fallback snapshot.
+ *
+ * COPY RULE: this is a sales page, not documentation. Every line here answers
+ * "what do I get?" — the outcome, the time saved, the problem that goes away.
+ * Implementation detail (crate names, traits, protocols, internal types) belongs
+ * in the project's GitHub README, which is one click away and rendered further
+ * down the page anyway. If a sentence would only land with someone who already
+ * uses the library, it is in the wrong file.
  */
 
 /** A key in the Paleday Tailwind palette, used to tint a project's page. */
@@ -73,68 +80,66 @@ export const projects: Project[] = [
     repo: 'artiqwest',
     name: 'artiqwest',
     logo: '/projects/artiqwest.svg',
-    tagline: 'HTTP and WebSockets over Tor, in pure Rust',
+    tagline: 'Private web requests for your app, without the setup',
     hero: 'Every request, through Tor.',
     summary:
-      'An HTTP client that routes every request through the Tor network using arti_client '
-      + 'and hyper — no external tor daemon, no SOCKS plumbing, no configuration. Three '
-      + 'functions: get, post and ws.',
+      'Send your application\'s web traffic through the Tor network with a single line of '
+      + 'code. There is nothing to install beside it and nothing to configure — the privacy '
+      + 'layer is built in, and your code looks the way it always did.',
     problem:
-      'Talking to an onion service from Rust usually means running a tor daemon beside your '
-      + 'program, wiring a SOCKS proxy into your HTTP client, and hoping the two stay in step. '
-      + 'artiqwest removes that whole layer: the Tor client is compiled into your binary, and '
-      + 'the call site looks like any other HTTP call.',
-    kind: 'Rust crate',
+      'Routing an application through Tor normally means running a second service next to it, '
+      + 'wiring a proxy into your code, and keeping the two in step forever. That is a week of '
+      + 'work and a permanent piece of infrastructure to maintain. artiqwest removes the whole '
+      + 'layer: you make a request, and it goes out over Tor.',
+    kind: 'Rust library',
     status: 'stable',
     accent: 'magenta',
     order: 1,
     features: [
       {
-        title: 'No daemon, no proxy',
-        body: 'The Arti Tor client is embedded in your binary. Nothing to install alongside it, nothing to supervise, no torrc, no SOCKS port to keep in sync.',
+        title: 'Nothing to install beside it',
+        body: 'The privacy layer is compiled into your program. No second service to deploy, supervise, or explain to whoever runs your servers.',
       },
       {
-        title: 'Three functions',
-        body: 'get, post and ws. That is the entire surface area — there is no builder to learn and no client to thread through your application.',
+        title: 'Three calls to learn',
+        body: 'Fetch, send, and stay connected. That is the whole thing — no client to set up and pass around, no configuration to get wrong.',
       },
       {
-        title: 'WebSockets that actually work',
-        body: 'Full-duplex connections to onion services and clearnet hosts alike, over tokio-tungstenite. Both paths are tested.',
+        title: 'Live connections too',
+        body: 'Real-time two-way connections work the same way, to private services and the open web alike.',
       },
       {
-        title: 'Bring your own client, or don\'t',
-        body: 'Pass an existing arti TorClient if you already have one bootstrapped. If you don\'t, artiqwest builds and manages one for you.',
+        title: 'Recovers on its own',
+        body: 'Connections drop; the network reroutes. It rebuilds quietly and retries before your code ever sees a failure.',
       },
       {
-        title: 'Survives circuit loss',
-        body: 'An expired or dropped TorClient is reloaded automatically, up to five times, before the call is allowed to fail.',
+        title: 'Out of your way while you build',
+        body: 'Local requests skip the network entirely, so your development loop stays as fast as it was before.',
       },
       {
-        title: 'Sensible about localhost',
-        body: 'Requests to localhost fall through to reqwest rather than being pushed out over the Tor network and back again.',
+        title: 'Free, and yours to audit',
+        body: 'MIT licensed, open source, and already used in production. Read every line before you ship it.',
       },
     ],
-    install: { label: 'Cargo.toml', code: 'cargo add artiqwest' },
+    install: { label: 'add it to your project', lang: 'shellscript', code: 'cargo add artiqwest' },
     example: {
-      label: 'src/main.rs',
+      label: 'the whole integration',
       lang: 'rust',
-      code: `use artiqwest::{get, post, ws};
+      code: `use artiqwest::{get, post};
 
 #[tokio::main]
 async fn main() {
-    // Clearnet, over Tor.
+    // An ordinary website — fetched privately.
     let response = get("https://httpbin.org/get", None, None).await.unwrap();
     assert_eq!(response.status(), 200);
 
-    // A hidden service, with headers.
+    // A private service, with headers, exactly as you would expect.
     let body = r#"{"test": "testing"}"#;
     let headers = vec![("Content-Type", "application/json")];
-    let response = post("http://vpns6exmqmg5znqmgxa5c6rgzpt6imy5yzrbsoszovgfipdjypnchpyd.onion/echo",
-                        body, Some(headers), None).await.unwrap();
+    let response = post("http://example.onion/echo", body, Some(headers), None)
+        .await
+        .unwrap();
     assert_eq!(response.to_string(), body);
-
-    // And a websocket, same idea.
-    let (mut write, read) = ws("wss://example.onion/socket", None).await.unwrap();
 }`,
     },
     crate: 'artiqwest',
@@ -144,50 +149,51 @@ async fn main() {
     repo: 'onyums',
     name: 'onyums',
     logo: '/projects/onyums.svg',
-    tagline: 'Serve an axum app as a Tor onion service',
-    hero: 'Your axum app, as an onion service.',
+    tagline: 'Publish a private web service, protected from the first minute',
+    hero: 'Your app, reachable only through Tor.',
     summary:
-      'An axum wrapper for onion services that is secure and complete by default. It '
-      + 'bootstraps the Tor client, generates TLS certificates, upgrades HTTP to HTTPS and '
-      + 'sits your router behind a built-in abuse-defense gate.',
+      'Put a web service online so that only people you share the address with can reach it — '
+      + 'with the encryption, certificates and abuse protection already switched on. No server '
+      + 'to rent, no ports to open, no security stack to assemble yourself.',
     problem:
-      'Standing up an onion service normally means assembling it: a tor daemon, a torrc, '
-      + 'certificates, a reverse proxy, rate limiting, and a list of ways to get it subtly '
-      + 'wrong. Onyums ships the hard parts enabled. You opt down from safety when you have '
-      + 'a reason to, rather than opting up to it one feature flag at a time.',
-    kind: 'Rust crate',
+      'Publishing a private service is normally an assembly job: a privacy service, certificates, '
+      + 'a proxy in front, rate limiting, and a long list of ways to get it quietly wrong. The '
+      + 'parts that protect you are the ones easiest to forget. Onyums ships assembled and '
+      + 'hardened — you turn protections off when you have a reason to, instead of finding out '
+      + 'later which ones you never turned on.',
+    kind: 'Rust library',
     status: 'stable',
     accent: 'cyan',
     order: 2,
     features: [
       {
-        title: 'Secure and complete by default',
-        body: 'TLS, the HTTP-to-HTTPS upgrade, the circuit policy gate and the Skin abuse-defense gate are all on before you write a line of configuration.',
+        title: 'Protected the moment it starts',
+        body: 'Encryption, certificates and abuse defense are on before you write a line of configuration. The safe setup is the default one.',
       },
       {
-        title: 'Arti compiled in',
-        body: 'No external tor daemon, no torrc, no system service. If you have deployed behind C-tor before, the thing you are looking for to configure is deliberately not there.',
+        title: 'No server to rent',
+        body: 'It runs from a machine you already have. No hosting bill, no public address, no provider holding your service.',
       },
       {
-        title: 'Nothing inbound to open',
-        body: 'Rendezvous circuits are established outbound. No port forwarded, no public IP, no firewall hole — any host that can make outbound TCP connections can serve.',
+        title: 'Nothing to open on your network',
+        body: 'Connections go out, never in. No port forwarding, no static IP, no firewall exception, no conversation with IT.',
       },
       {
-        title: 'A gate before the first byte',
-        body: 'The circuit-level policy gate runs before anything is served, and can accept, challenge, reject or shut down a circuit on its own terms.',
+        title: 'Bad traffic stopped at the door',
+        body: 'Abuse protection runs before a request ever reaches your code, so a flood costs you nothing but the refusal.',
       },
       {
-        title: 'ConnectionInfo, not SocketAddr',
-        body: 'An extractor built for private connections, where the concept of a socket address does not exist. Tell Tor traffic apart from the rest without guessing.',
+        title: 'Keep the app you already wrote',
+        body: 'Hand it your existing web service and it publishes that. Nothing to port, nothing to rewrite.',
       },
       {
-        title: 'It is still your router',
-        body: 'Hand it the axum Router you already wrote. The handlers, extractors and middleware you know all keep working.',
+        title: 'The address stays the same',
+        body: 'Restart the machine, move it to another one — the address you gave people keeps working.',
       },
     ],
-    install: { label: 'Cargo.toml', code: 'cargo add onyums tokio --features tokio/full' },
+    install: { label: 'add it to your project', lang: 'shellscript', code: 'cargo add onyums tokio --features tokio/full' },
     example: {
-      label: 'src/main.rs — the whole program',
+      label: 'a complete, private web service',
       lang: 'rust',
       code: `use onyums::{OnionService, routing::get, Router};
 
@@ -197,16 +203,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let handle = OnionService::builder()
         .router(app)
-        .nickname("my_onion")   // names the identity key in the keystore
+        .nickname("my_onion")
         .serve()
         .await?;
 
-    // The address is stable across restarts (the keystore is persisted).
+    // Share this address with whoever should reach the service.
     println!("serving on https://{}", handle.onion_address());
 
-    // Resolves once the descriptor is published and the service is reachable.
     handle.ready().await;
-
     tokio::signal::ctrl_c().await?;
     handle.shutdown().await;
     Ok(())
@@ -218,97 +222,96 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     slug: 'enlil',
     repo: 'enlil',
     name: 'Enlil',
-    tagline: 'A bare-metal Type-1 hypervisor that makes one desktop feel like several PCs',
+    logo: '/projects/enlil.svg',
+    tagline: 'Several separate computers on one desktop, without touching what you have',
     hero: 'One machine. Several real PCs.',
     summary:
-      'A portable, bare-metal-capable Type-1 hypervisor written entirely in Rust. It turns '
-      + 'a single x86 desktop into multiple transparent virtual PCs — each pinned to its own '
-      + 'cores and memory, each seeing what looks like dedicated hardware — and boots from a '
-      + 'USB stick without touching a single drive you already have.',
+      'Run several independent computers on a single desktop — each with its own processors, '
+      + 'memory and hardware, each behaving like a machine of its own. It starts from a USB '
+      + 'stick and leaves everything already on your drives exactly as it was.',
     problem:
-      'Trying a hypervisor normally means committing to it: repartition the disk, replace the '
-      + 'bootloader, rebuild the machine, and find out afterwards whether it was worth it. '
-      + 'Enlil boots as a UEFI application off a USB stick and leaves every existing drive and '
-      + 'bootloader untouched. Unplug it, reboot, and you are back on bare metal.',
-    kind: 'Hypervisor',
+      'Trying this normally means committing first: repartition the drive, replace how the '
+      + 'machine starts, rebuild your setup, and find out afterwards whether it was worth it. '
+      + 'Enlil runs from a USB stick. Pull it out, restart, and your computer is precisely as '
+      + 'you left it.',
+    kind: 'Operating software',
     status: 'alpha',
     accent: 'yellow',
     order: 3,
     features: [
       {
-        title: 'Non-destructive by construction',
-        body: 'A standard UEFI application at /EFI/BOOT/BOOTX64.EFI, loading its config and per-guest firmware from the same stick. Testing it costs you nothing but a reboot.',
+        title: 'Try it, lose nothing',
+        body: 'It starts from a USB stick and never writes to your drives. The cost of finding out whether it suits you is one restart.',
       },
       {
-        title: 'Transparent to the guest',
-        body: 'Each guest is pinned to its own cores and memory and sees what looks like real, dedicated hardware — with anti-VM-detection hardening so a guest OS cannot tell it is virtualized.',
+        title: 'Each one feels like its own machine',
+        body: 'Every computer gets its own processors and memory and sees hardware that looks real to it — including software that normally refuses to run in a virtual machine.',
       },
       {
-        title: 'Granular peripheral routing',
-        body: 'USB devices, NICs and GPUs are routed per guest rather than shared by accident. The management console owns the policy.',
+        title: 'Your hardware where you want it',
+        body: 'Send a particular graphics card, drive, or USB device to a particular machine. No fighting over who gets what.',
       },
       {
-        title: 'Both directions mediated',
-        body: 'Enlil sits in the path of guest-to-hardware traps and hardware-to-guest interrupts alike — which is what makes routing them across machines possible at all.',
+        title: 'One desk, two workstations',
+        body: 'A Windows machine and a Linux machine on the same box at the same time, each with real performance, neither aware of the other.',
       },
       {
-        title: 'Logical machines over a physical pool',
-        body: 'The longer arc: physical machines become stateless hardware providers, and a guest becomes a logical machine defined only by a resource manifest and a routing table — hardware disaggregation underneath unmodified operating systems.',
+        title: 'Built toward shared hardware',
+        body: 'The long aim is machines that draw their processors, memory and graphics from a pool of computers rather than one box — so capacity is something you allocate, not something you buy twice.',
       },
       {
-        title: '100% Rust, no_std core',
-        body: 'Built on the RustVMM crate ecosystem, targeting x86-64 with Intel VT-x/VT-d or AMD-V/AMD-Vi. ARM and RISC-V are planned.',
+        title: 'Early, open, and honest about it',
+        body: 'Pre-1.0 research software under an MIT license. Worth watching and worth testing — not yet worth trusting with anything you cannot lose.',
       },
     ],
-    links: [
-      { label: 'RustVMM', href: 'https://github.com/rust-vmm' },
-    ],
+    links: [{ label: 'Security notes', href: 'https://github.com/basic-automation/enlil/blob/master/SECURITY.md' }],
   },
   {
     slug: 'nisaba',
     repo: 'nisaba',
     name: 'Nisaba',
-    tagline: 'One product catalog, synced across every marketplace you sell on',
+    tagline: 'One product list that keeps every storefront you sell on in step',
     hero: 'One catalog. Every marketplace.',
     summary:
-      'A desktop app that holds a local master catalog of products and variants and keeps '
-      + 'inventory, pricing, descriptions and photos in sync across eBay, Squarespace, '
-      + 'XMR Bazaar and Amazon.',
+      'Keep a single product list and let it publish everywhere you sell. Stock levels, prices, '
+      + 'photos and descriptions stay in step across eBay, Squarespace, Amazon and XMR Bazaar, '
+      + 'so a sale in one place is reflected in all of them.',
     problem:
-      'Selling the same products in four places means maintaining four catalogs, and every '
-      + 'sale silently desynchronises them. Nisaba keeps one master locally and reconciles '
-      + 'the rest to it — including platforms that track stock as a mode rather than a number.',
+      'Selling the same products in four places means keeping four product lists, and every sale '
+      + 'quietly pulls them apart. You find out at the worst moment — when something sells twice '
+      + 'and you only have one. Nisaba keeps one list, on your own computer, and brings the '
+      + 'storefronts back to it.',
     kind: 'Desktop app',
     status: 'active',
     accent: 'blue',
     order: 4,
     features: [
       {
-        title: 'Four platforms, one model',
-        body: 'eBay, Squarespace, XMR Bazaar and Amazon sit behind one PlatformAdapter trait, each declaring what it can actually do so the UI never offers what a platform will refuse.',
+        title: 'Sell in four places, maintain one list',
+        body: 'Edit a price, a photo or a description once. Every storefront that carries the product picks it up.',
       },
       {
-        title: 'Reconciliation, not overwriting',
-        body: 'A sync engine with quantity deltas, conflict resolution and sale detection — including for platforms that use stock modes instead of numeric quantities.',
+        title: 'Stock that stays honest',
+        body: 'A sale anywhere counts down everywhere, so you stop selling things you no longer have.',
       },
       {
-        title: 'Supplier catalogs, sandboxed',
-        body: 'Vendor plugins are TypeScript modules executed in an embedded Deno runtime. They import SKUs, variants, dealer pricing and inventory without being trusted with the rest of the app.',
+        title: 'Supplier catalogs, imported',
+        body: 'Pull product lists, options and dealer pricing straight from your suppliers instead of retyping them.',
       },
       {
-        title: 'Peer-to-peer over Tor',
-        body: 'Optional sync between installs across Tor onion services, with AES-GCM encrypted payloads. Two shops, one catalog, no server in the middle.',
+        title: 'Your business stays on your machine',
+        body: 'The catalog lives on your computer, not someone else\'s server, and your storefront logins sit in the keychain your operating system already protects.',
       },
       {
-        title: 'Secrets in the keyring',
-        body: 'Platform credentials live in the OS keyring, not in the catalog database and not in a config file next to it.',
+        title: 'Two locations, one catalog',
+        body: 'Run it in more than one place and keep them in step directly — no service in the middle, no subscription to hold your inventory hostage.',
       },
       {
-        title: 'Analytics that stay local',
-        body: 'Per-product history and time-windowed analytics, charted in the app, computed from your own data on your own machine.',
+        title: 'Know what actually sells',
+        body: 'History and trends per product, so restocking is a decision rather than a guess.',
       },
     ],
-    links: [{ label: 'Built with Tauri 2', href: 'https://v2.tauri.app' }],
+    links: [{ label: 'Built with Tauri', href: 'https://v2.tauri.app' }],
   },
   {
     slug: 'skidbladnir',
@@ -316,36 +319,35 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     name: 'Skidbladnir',
     logo: '/projects/skidbladnir.svg',
     screenshot: '/projects/shots/skidbladnir-screenshot.webp',
-    tagline: 'A desktop GUI for next-generation image formats',
+    tagline: 'Smaller images for the web, without touching a command line',
     hero: 'Modern image formats, without the flags.',
     summary:
-      'A desktop front-end for the command-line converters behind modern image formats. '
-      + 'It builds the shell command for you and hands it to the upstream binaries — '
-      + 'WebP today via cwebp, JPEG 2000 next.',
+      'Convert images to the formats that make pages load faster, through a window instead of '
+      + 'a command line. Same output as the tools the professionals use, none of the syntax.',
     problem:
-      'The reference encoders for these formats are excellent and entirely unapproachable: '
-      + 'a wall of flags you re-learn every time you need them. Skidbladnir puts a window '
-      + 'in front of them and gets the same output.',
+      'The official converters for these formats are excellent and almost unusable — a wall of '
+      + 'options you relearn every time you need them, and one wrong flag away from a ruined '
+      + 'batch. Skidbladnir puts a window in front of them and gets the same result.',
     kind: 'Desktop app',
     status: 'active',
     accent: 'green',
     order: 5,
     features: [
       {
-        title: 'Batch conversion, no flags',
-        body: 'Point it at your images and pick your settings. It assembles the cwebp invocation and runs it.',
+        title: 'Point it at a folder and go',
+        body: 'Convert a whole batch at once. Pick your settings in a window; it handles the rest.',
       },
       {
-        title: 'The real encoders',
-        body: 'It wraps the official upstream binaries rather than reimplementing the codecs, so output matches what the reference tools produce.',
+        title: 'Lighter pages, same picture',
+        body: 'Modern formats carry the same image in a fraction of the file size — faster pages for your visitors, less bandwidth on your bill.',
       },
       {
-        title: 'JPEG 2000 next',
-        body: 'WebP ships today; JPEG 2000 support is in progress behind the same interface.',
+        title: 'The professionals\' output',
+        body: 'It drives the official encoders rather than reimplementing them, so what comes out is what the reference tools produce.',
       },
       {
         title: 'Nothing to install first',
-        body: 'Ships as a standalone distributable with the binaries bundled — no toolchain required on the machine that runs it.',
+        body: 'Everything it needs ships with it. Download, open, convert — no setup, no toolchain, no terminal.',
       },
     ],
   },

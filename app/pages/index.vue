@@ -43,13 +43,13 @@ useSeoMeta({
         />
       </h1>
 
-      <p class="mt-7 max-w-3xl text-base leading-relaxed text-pn-dim sm:text-lg">
+      <p class="mt-6 max-w-3xl text-base leading-relaxed text-pn-dim sm:text-lg">
         We design and build software tools for businesses — and we publish the sharp
         ones. Privacy-preserving Rust crates for the Tor network, desktop apps that
         take the tedium out of catalogs and image pipelines. All of it open source.
       </p>
 
-      <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm">
+      <div class="mt-6 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm">
         <NuxtLink
           to="/projects"
           class="text-pn-accent transition-colors hover:text-pn-bright-magenta"
@@ -65,7 +65,7 @@ useSeoMeta({
         </a>
       </div>
 
-      <dl class="mt-12 flex flex-wrap gap-x-10 gap-y-3 text-xs">
+      <dl class="mt-7 flex flex-wrap gap-x-10 gap-y-3 text-xs">
         <div v-for="stat in stats" :key="stat.label" class="flex items-baseline gap-2">
           <dt class="text-pn-muted">
             {{ stat.label }}
@@ -80,7 +80,7 @@ useSeoMeta({
     <!-- ── Projects ─────────────────────────────────────────────────────── -->
     <section id="projects" class="mt-8">
       <TermRule label="projects" />
-      <div class="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2">
+      <div class="mt-10 grid gap-x-24 gap-y-20 sm:grid-cols-2">
         <ProjectCard v-for="p in projects" :key="p.slug" :project="p" />
       </div>
     </section>

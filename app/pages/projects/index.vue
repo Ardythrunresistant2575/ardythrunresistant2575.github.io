@@ -29,7 +29,7 @@ useSeoMeta({
     </section>
 
     <TermRule />
-    <div class="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2">
+    <div class="mt-10 grid gap-x-24 gap-y-20 sm:grid-cols-2">
       <ProjectCard v-for="p in projects" :key="p.slug" :project="p" />
     </div>
   </div>

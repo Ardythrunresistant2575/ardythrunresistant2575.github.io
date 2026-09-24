@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-09-24T21:49:42.975Z",
+  "generatedAt": "2026-09-24T22:30:39.332Z",
   "org": "basic-automation",
   "repos": {
     "artiqwest": {
       "repo": "artiqwest",
-      "fetchedAt": "2026-09-24T21:49:40.336Z",
+      "fetchedAt": "2026-09-24T22:30:35.221Z",
       "description": "basic http request over tor using arti.",
       "htmlUrl": "https://github.com/basic-automation/artiqwest",
       "homepage": null,
@@ -31,7 +31,7 @@
     },
     "onyums": {
       "repo": "onyums",
-      "fetchedAt": "2026-09-24T21:49:41.073Z",
+      "fetchedAt": "2026-09-24T22:30:36.272Z",
       "description": "Onion-service server using axum.",
       "htmlUrl": "https://github.com/basic-automation/onyums",
       "homepage": null,
@@ -58,7 +58,7 @@
     },
     "nisaba": {
       "repo": "nisaba",
-      "fetchedAt": "2026-09-24T21:49:42.116Z",
+      "fetchedAt": "2026-09-24T22:30:37.821Z",
       "description": "Desktop app for managing one product catalog and syncing it across eBay, Squarespace, XMR Bazaar and Amazon. Rust + Tauri 2 + Nuxt 3, with sandboxed vendor plugins and optional P2P sync over Tor.",
       "htmlUrl": "https://github.com/basic-automation/nisaba",
       "homepage": null,
@@ -77,7 +77,7 @@
     },
     "Skidbladnir": {
       "repo": "Skidbladnir",
-      "fetchedAt": "2026-09-24T21:49:42.539Z",
+      "fetchedAt": "2026-09-24T22:30:38.517Z",
       "description": "An electron Graphical User Interface (GUI) for the Webp image format with a cwebp back-end.",
       "htmlUrl": "https://github.com/basic-automation/Skidbladnir",
       "homepage": null,
@@ -97,18 +97,18 @@
       ],
       "stars": 0,
       "forks": 0,
-      "openIssues": 1,
+      "openIssues": 0,
       "license": null,
       "defaultBranch": "master",
       "createdAt": "2019-03-10T04:37:55Z",
-      "pushedAt": "2026-09-24T21:32:15Z",
+      "pushedAt": "2026-09-24T22:06:01Z",
       "archived": false,
-      "readmeHtml": "<h1>ba | Next Generation Image</h1>\n<p>A Graphical User Interface (GUI) for the conversion tools of most popular next-generation open-source image formats. Including WebP and JPG2000(coming soon).</p>\n<p>This project is an electron app that simply generates a shell command and passes that command to the binaries provided by the open-source projects (for example cwebp.exe).</p>\n<h1>Screenshot</h1>\n<p><img src=\"https://basicautomation.io/ba-nextGenIMG/images/screenshots/nextgenimg-v0-1-1.webp\" alt=\"screenshot\"></p>\n<h2>Minimum Path to Awesome</h2>\n<p>**Clone git repository: **</p>\n<p><code>git clone git@github.com:Creative515/ba-nextGenIMG.git</code></p>\n<p><strong>Install yarn:</strong></p>\n<p><code>npm install -g yarn</code></p>\n<p><strong>Install dependencies:</strong></p>\n<p><code>yarn install</code></p>\n<p><strong>Create directory:</strong></p>\n<p><code>./resources/win/bin/</code></p>\n<p><strong>Download WebP CLI:</strong></p>\n<p><code>https://developers.google.com/speed/webp/docs/precompiled</code>\nand place cwebp.exe (found in ./bin/cwebp.exe) in \n<code>./resources/win/bin/</code></p>\n<p><strong>Create distributable</strong></p>\n<p><code>yarn dist</code></p>\n<p><strong>Load program</strong></p>\n<p>Double click: <code>./dist/bin/ba-nextgenimg 0.0.1.exe</code></p>\n",
+      "readmeHtml": "<h1>Skidbladnir</h1>\n<p>A desktop GUI for converting images to next-generation open-source formats. Today it\ndrives Google&#39;s <code>cwebp</code> encoder and exposes its full control surface — not just a\nquality slider — so you can tune an encode the way the command-line tool allows,\nwithout memorising the command line.</p>\n<p><img src=\"https://basicautomation.io/ba-nextGenIMG/images/screenshots/nextgenimg-v0-1-1.webp\" alt=\"screenshot\"></p>\n<h2>Features</h2>\n<p><strong>Encoding modes</strong></p>\n<ul>\n<li>Lossy, lossless, near-lossless and JPEG-like modes</li>\n<li>Built-in presets: default, photo, picture, drawing, icon, text</li>\n<li>Quality and alpha-quality control</li>\n<li>Target file size or target PSNR instead of a fixed quality</li>\n</ul>\n<p><strong>Expert controls</strong></p>\n<ul>\n<li>Compression method and segment count</li>\n<li>Spatial noise shaping (SNS)</li>\n<li>Filter strength, filter sharpness, strong/simple filtering and auto-filter</li>\n<li>Multi-pass encoding</li>\n<li>Partition limit</li>\n<li>Sharp YUV (higher-quality RGB→YUV conversion)</li>\n<li>Low-memory mode</li>\n<li>Resize on the way out (width and height)</li>\n<li>Multi-threading</li>\n</ul>\n<p><strong>Workflow</strong></p>\n<ul>\n<li>Batch conversion across multiple input files</li>\n<li>Original and converted file sizes reported after each conversion</li>\n<li>Advanced options hidden behind a disclosure so the common path stays simple</li>\n</ul>\n<h2>Install</h2>\n<p>Grab a build from the <a href=\"https://github.com/basic-automation/Skidbladnir/releases\">releases page</a>.</p>\n<p>Builds are currently <strong>Windows only</strong>.</p>\n<h2>Build from source</h2>\n<p>Requires Node.js and npm.</p>\n<pre><code class=\"language-bash\">git clone https://github.com/basic-automation/Skidbladnir.git\ncd Skidbladnir\nnpm install\n</code></pre>\n<p>Skidbladnir shells out to the <code>cwebp</code> binary, which is not vendored in this\nrepository. Download the <a href=\"https://developers.google.com/speed/webp/docs/precompiled\">WebP precompiled\nbinaries</a> and place\n<code>cwebp.exe</code> at <code>./resources/win/bin/cwebp.exe</code>.</p>\n<p>Then:</p>\n<pre><code class=\"language-bash\">npm start          # run the app\nnpm run dist       # build a distributable into ./dist\n</code></pre>\n<h2>Status</h2>\n<p>Skidbladnir is an Electron application. A rewrite onto <strong>Rust + Tauri 2</strong> with a\n<strong>Nuxt + Tailwind</strong> frontend — targeting Windows, Linux and macOS — is in progress;\nthe work queue lives in <a href=\"https://github.com/basic-automation/Skidbladnir/blob/master/ROADMAP.md\">ROADMAP.md</a>. The Electron app remains the\nshipping application until that port reaches feature parity.</p>\n<p>Known gaps in the current release:</p>\n<ul>\n<li>Windows only; no Linux or macOS build.</li>\n<li>The <code>cwebp</code> binary is not bundled and must be downloaded manually.</li>\n<li>WebP is the only output format. JPEG 2000 has been listed as &quot;coming soon&quot; since\n2019 and has not been implemented.</li>\n<li>No automated tests and no CI.</li>\n</ul>\n<h2>License</h2>\n<p>ISC. See <a href=\"https://github.com/basic-automation/Skidbladnir/blob/master/LICENSE\">LICENSE</a> if present, or the <code>license</code> field in <code>package.json</code>.</p>\n",
       "latestRelease": null
     },
     "enlil": {
       "repo": "enlil",
-      "fetchedAt": "2026-09-24T21:49:41.671Z",
+      "fetchedAt": "2026-09-24T22:30:37.079Z",
       "description": "Bare-Metal Mesh Hypervisor",
       "htmlUrl": "https://github.com/basic-automation/enlil",
       "homepage": null,

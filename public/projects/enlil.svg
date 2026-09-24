@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 360">
+  <title>Enlil</title>
+  <!-- Enlil is the Sumerian lord of wind, so the mark is wind: three gusts
+       sweeping right, each ending in a curl that turns the same way, so they
+       read as one movement rather than three ornaments. Drawn in the colours
+       the artiqwest and onyums wordmarks already use, with the warm accent in
+       the lowest gust — the same place artiqwest puts its underline. -->
+  <g fill="none" stroke-linecap="round">
+    <path stroke="#292d3e" stroke-width="17" d="M74 66H268c21.0,0 25.0,-21.0 25.0,-20.0s-11.2,-20.0 -25.0,-20.0s-22.4,10.0 -14.4,21.0"/>
+    <path stroke="#292d3e" stroke-width="17" d="M54 126H342c29.4,0 35.0,-29.4 35.0,-28.0s-15.7,-28.0 -35.0,-28.0s-31.4,14.0 -20.2,29.4"/>
+    <path stroke="#f5c177" stroke-width="17" d="M96 186H252c18.9,0 22.5,-18.9 22.5,-18.0s-10.1,-18.0 -22.5,-18.0s-20.2,9.0 -13.0,18.9"/>
+  </g>
+  <g fill="#292d3e">
+    <rect x="71" y="250" width="18" height="90"/>
+    <rect x="71" y="250" width="62" height="18"/>
+    <rect x="71" y="286" width="52" height="18"/>
+    <rect x="71" y="322" width="62" height="18"/>
+    <rect x="157" y="250" width="18" height="90"/>
+    <rect x="205" y="250" width="18" height="90"/>
+    <path d="M157 250h18l48 90h-18z"/>
+    <rect x="247" y="250" width="18" height="90"/>
+    <rect x="247" y="322" width="58" height="18"/>
+    <rect x="329" y="250" width="18" height="90"/>
+    <rect x="371" y="250" width="18" height="90"/>
+    <rect x="371" y="322" width="58" height="18"/>
+  </g>
+</svg>

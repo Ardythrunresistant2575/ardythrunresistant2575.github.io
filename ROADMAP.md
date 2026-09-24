@@ -30,6 +30,10 @@ record. There is no run log.
 
 ## Phase 3 — Operations
 
+- [ ] Create the `glance.basicautomation.io` DNS record in Cloudflare — the Caddy
+      site block exists and validates, but the name does not resolve yet, so
+      Glance is only reachable on the LAN at `:5188` since it moved off the apex
+
 - [ ] Ship `GITHUB_TOKEN` to the container so the rate limit stops being a factor
 - [ ] Structured request logging, and a `status` page fed by `/healthz`
 - [ ] Alert when the site has been serving from the fallback snapshot for more than an hour

@@ -25,6 +25,8 @@ export interface Feature {
 export interface CodeSample {
   /** Shown above the block, e.g. "src/main.rs" or "Cargo.toml" */
   label: string
+  /** Grammar for the syntax highlighter; omit for plain text */
+  lang?: string
   code: string
 }
 
@@ -37,6 +39,8 @@ export interface Project {
   name: string
   /** Wordmark in public/projects/, shown instead of the name in the page hero */
   logo?: string
+  /** Screenshot in public/projects/shots/, shown on the card and the page */
+  screenshot?: string
   /** One line, sentence case, no trailing period — cards, lists and <title> */
   tagline: string
   /** The headline claim. Short, declarative, the one thing to remember. */
@@ -113,6 +117,7 @@ export const projects: Project[] = [
     install: { label: 'Cargo.toml', code: 'cargo add artiqwest' },
     example: {
       label: 'src/main.rs',
+      lang: 'rust',
       code: `use artiqwest::{get, post, ws};
 
 #[tokio::main]
@@ -183,6 +188,7 @@ async fn main() {
     install: { label: 'Cargo.toml', code: 'cargo add onyums tokio --features tokio/full' },
     example: {
       label: 'src/main.rs — the whole program',
+      lang: 'rust',
       code: `use onyums::{OnionService, routing::get, Router};
 
 #[tokio::main]
@@ -209,6 +215,56 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     crate: 'onyums',
   },
   {
+    slug: 'enlil',
+    repo: 'enlil',
+    name: 'Enlil',
+    tagline: 'A bare-metal Type-1 hypervisor that makes one desktop feel like several PCs',
+    hero: 'One machine. Several real PCs.',
+    summary:
+      'A portable, bare-metal-capable Type-1 hypervisor written entirely in Rust. It turns '
+      + 'a single x86 desktop into multiple transparent virtual PCs — each pinned to its own '
+      + 'cores and memory, each seeing what looks like dedicated hardware — and boots from a '
+      + 'USB stick without touching a single drive you already have.',
+    problem:
+      'Trying a hypervisor normally means committing to it: repartition the disk, replace the '
+      + 'bootloader, rebuild the machine, and find out afterwards whether it was worth it. '
+      + 'Enlil boots as a UEFI application off a USB stick and leaves every existing drive and '
+      + 'bootloader untouched. Unplug it, reboot, and you are back on bare metal.',
+    kind: 'Hypervisor',
+    status: 'alpha',
+    accent: 'yellow',
+    order: 3,
+    features: [
+      {
+        title: 'Non-destructive by construction',
+        body: 'A standard UEFI application at /EFI/BOOT/BOOTX64.EFI, loading its config and per-guest firmware from the same stick. Testing it costs you nothing but a reboot.',
+      },
+      {
+        title: 'Transparent to the guest',
+        body: 'Each guest is pinned to its own cores and memory and sees what looks like real, dedicated hardware — with anti-VM-detection hardening so a guest OS cannot tell it is virtualized.',
+      },
+      {
+        title: 'Granular peripheral routing',
+        body: 'USB devices, NICs and GPUs are routed per guest rather than shared by accident. The management console owns the policy.',
+      },
+      {
+        title: 'Both directions mediated',
+        body: 'Enlil sits in the path of guest-to-hardware traps and hardware-to-guest interrupts alike — which is what makes routing them across machines possible at all.',
+      },
+      {
+        title: 'Logical machines over a physical pool',
+        body: 'The longer arc: physical machines become stateless hardware providers, and a guest becomes a logical machine defined only by a resource manifest and a routing table — hardware disaggregation underneath unmodified operating systems.',
+      },
+      {
+        title: '100% Rust, no_std core',
+        body: 'Built on the RustVMM crate ecosystem, targeting x86-64 with Intel VT-x/VT-d or AMD-V/AMD-Vi. ARM and RISC-V are planned.',
+      },
+    ],
+    links: [
+      { label: 'RustVMM', href: 'https://github.com/rust-vmm' },
+    ],
+  },
+  {
     slug: 'nisaba',
     repo: 'nisaba',
     name: 'Nisaba',
@@ -225,7 +281,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     kind: 'Desktop app',
     status: 'active',
     accent: 'blue',
-    order: 3,
+    order: 4,
     features: [
       {
         title: 'Four platforms, one model',
@@ -258,6 +314,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     slug: 'skidbladnir',
     repo: 'Skidbladnir',
     name: 'Skidbladnir',
+    logo: '/projects/skidbladnir.svg',
+    screenshot: '/projects/shots/skidbladnir-screenshot.webp',
     tagline: 'A desktop GUI for next-generation image formats',
     hero: 'Modern image formats, without the flags.',
     summary:
@@ -271,7 +329,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     kind: 'Desktop app',
     status: 'active',
     accent: 'green',
-    order: 4,
+    order: 5,
     features: [
       {
         title: 'Batch conversion, no flags',

@@ -13,8 +13,8 @@ const stats = computed(() => {
 })
 
 const description
-  = 'Open-source tooling from Basic Automation: privacy-preserving Rust crates for the '
-    + 'Tor network, and desktop apps for catalogs and image pipelines.'
+  = 'Basic Automation designs and builds software tools for businesses. Open-source '
+    + 'Rust crates for the Tor network, and desktop apps for catalogs and image pipelines.'
 
 useSeoMeta({
   title: 'basic automation — software for the productive',
@@ -30,24 +30,23 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl px-5 sm:px-6">
+  <div class="mx-auto max-w-7xl px-5 sm:px-6">
     <!-- ── Hero ─────────────────────────────────────────────────────────── -->
     <section class="pt-16 pb-14 sm:pt-24">
-      <p class="text-xs text-pn-muted">
-        <span class="text-pn-accent">basic-automation</span>@github
-        <span class="text-pn-rule">:</span>~<span class="text-pn-rule">$</span> ls ./public
+      <p class="text-xs tracking-[0.25em] text-pn-accent uppercase">
+        Software toolmakers
       </p>
 
-      <h1 class="mt-7 text-3xl leading-tight text-pn-fg-bright sm:text-5xl">
+      <h1 class="mt-7 text-4xl leading-tight text-pn-fg-bright sm:text-6xl">
         Software for the <span class="text-pn-accent">productive</span><span
           aria-hidden="true" class="ml-1.5 cursor"
         />
       </h1>
 
-      <p class="mt-7 max-w-2xl text-sm leading-relaxed text-pn-dim sm:text-base">
-        Small, sharp tools that do one thing without asking you to assemble it first.
-        Privacy-preserving Rust crates for the Tor network, and desktop apps that take
-        the tedium out of catalogs and image pipelines. All of it open source.
+      <p class="mt-7 max-w-3xl text-base leading-relaxed text-pn-dim sm:text-lg">
+        We design and build software tools for businesses — and we publish the sharp
+        ones. Privacy-preserving Rust crates for the Tor network, desktop apps that
+        take the tedium out of catalogs and image pipelines. All of it open source.
       </p>
 
       <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm">
@@ -79,19 +78,26 @@ useSeoMeta({
     </section>
 
     <!-- ── Projects ─────────────────────────────────────────────────────── -->
-    <section id="projects">
+    <section id="projects" class="mt-8">
       <TermRule label="projects" />
-      <div class="mt-6 space-y-1">
-        <ProjectRow v-for="p in projects" :key="p.slug" :project="p" />
+      <div class="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2">
+        <ProjectCard v-for="p in projects" :key="p.slug" :project="p" />
       </div>
     </section>
 
     <!-- ── About ────────────────────────────────────────────────────────── -->
-    <section id="about" class="mt-20">
+    <section id="about" class="mt-40">
       <TermRule label="about" />
       <div class="mt-8 max-w-2xl space-y-5 text-sm leading-relaxed text-pn-dim">
         <p class="text-base text-pn-fg">
-          Basic Automation builds the tools it needed and couldn't find.
+          Basic Automation is a toolmaker. We design and build software tools for
+          businesses.
+        </p>
+        <p>
+          An artificer makes the instruments other people work with — and is the first
+          to use them, which is the only honest way to find out whether a tool is any
+          good. The projects on this page came out of real work: each one started as
+          something a job needed and nothing on the market provided.
         </p>
         <p>
           Most of it is Rust, and a good deal of it concerns the Tor network — not as a
@@ -99,6 +105,10 @@ useSeoMeta({
           as any other HTTP call. The libraries ship secure and complete by default: the
           hard parts are enabled out of the box and you opt down when you have a reason
           to, rather than assembling safety from feature flags.
+        </p>
+        <p>
+          A good tool is unremarkable in use. It has one job, it doesn't ask to be
+          configured into correctness, and it holds an edge. That is the whole bar.
         </p>
         <p>
           Everything here is public and open source. Issues and pull requests are

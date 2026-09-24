@@ -8,18 +8,18 @@ const year = new Date().getFullYear()
 </script>
 
 <template>
-  <footer class="mx-auto mt-24 w-full max-w-4xl px-5 pb-16 sm:px-6">
+  <footer class="mx-auto mt-24 w-full max-w-7xl px-5 pb-16 sm:px-6">
     <div class="rule-dashed" />
 
     <div class="grid gap-8 pt-8 text-xs sm:grid-cols-3">
       <div>
-        <div class="flex items-center gap-2.5 text-sm">
-          <BrandMark alt="" class="h-5 w-5 shrink-0" />
+        <div class="flex items-center gap-3 text-base">
+          <BrandMark class="h-20 w-20 shrink-0 text-pn-accent" />
           <span class="text-pn-fg-bright">basic<span class="text-pn-accent">automation</span></span>
         </div>
         <p class="mt-3 max-w-[22rem] leading-relaxed text-pn-muted">
-          Software for the productive. Privacy-preserving tools, mostly in Rust,
-          released under open-source licenses.
+          We design and build software tools for businesses. The sharp ones get
+          published — mostly Rust, all open source.
         </p>
       </div>
 

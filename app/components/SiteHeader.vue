@@ -7,9 +7,9 @@ const nav = [
 
 <template>
   <header class="sticky top-0 z-50 bg-pn-bg">
-    <div class="mx-auto flex h-14 max-w-4xl items-center gap-5 px-5 sm:px-6">
-      <NuxtLink to="/" class="flex items-center gap-2.5 text-sm" aria-label="Basic Automation — home">
-        <BrandMark alt="" class="h-5 w-5 shrink-0" />
+    <div class="mx-auto flex h-32 max-w-7xl items-center gap-5 px-5 sm:px-6">
+      <NuxtLink to="/" class="flex items-center gap-3 text-base" aria-label="Basic Automation — home">
+        <BrandMark title="Basic Automation" class="h-24 w-24 shrink-0 text-pn-accent" />
         <span class="text-pn-fg-bright">basic<span class="text-pn-accent">automation</span></span>
       </NuxtLink>
 

@@ -8,9 +8,35 @@ const { project } = defineProps<{ project: EnrichedProject }>()
   <NuxtLink
     :to="`/projects/${project.slug}`"
     :style="accentVar(project.accent)"
-    class="group block bar py-5 transition-colors hover:bg-black/[0.035]"
+    class="group block"
   >
-    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+    <!-- Media. A screenshot when there is one, the wordmark when there isn't,
+         and the project's name set large when there is neither — the point is
+         that every card occupies the same block so the grid stays even. No
+         frame, no fill: the media sits straight on the page's ground. -->
+    <div class="flex aspect-16/10 items-center justify-center overflow-hidden">
+      <img
+        v-if="project.screenshot"
+        :src="project.screenshot"
+        :alt="`${project.name} screenshot`"
+        loading="lazy"
+        class="h-full w-full object-cover object-top transition-opacity duration-300 group-hover:opacity-90"
+      >
+      <img
+        v-else-if="project.logo"
+        :src="project.logo"
+        :alt="project.name"
+        loading="lazy"
+        class="max-h-[62%] max-w-[78%] object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+      >
+      <span
+        v-else
+        aria-hidden="true"
+        class="text-4xl text-pn-rule transition-colors duration-300 group-hover:text-[var(--accent)] sm:text-5xl"
+      >{{ project.name }}</span>
+    </div>
+
+    <div class="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
       <h3 class="text-base text-pn-fg-bright transition-colors group-hover:text-[var(--accent)]">
         {{ project.name }}
       </h3>
@@ -20,7 +46,7 @@ const { project } = defineProps<{ project: EnrichedProject }>()
       <StatusDot :status="project.status" class="ml-auto" />
     </div>
 
-    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-pn-dim">
+    <p class="mt-2 text-sm leading-relaxed text-pn-dim">
       {{ project.tagline }}
     </p>
 

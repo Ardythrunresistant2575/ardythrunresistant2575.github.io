@@ -28,4 +28,8 @@ export interface RepoMeta {
   docsUrl?: string
 }
 
-export type EnrichedProject = Project & { meta: RepoMeta | null }
+export type EnrichedProject = Project & {
+  meta: RepoMeta | null
+  /** `project.example.code`, syntax-highlighted on the server. */
+  exampleHtml?: string | null
+}

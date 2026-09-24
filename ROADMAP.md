@@ -13,14 +13,17 @@ record. There is no run log.
 - [x] Per-project marketing pages: hero, why, features, worked example, folded README
 - [x] Self-hosted Fira Code, org logo, favicons, Open Graph card
 - [x] Container image + DeepStack service + Caddy route for the apex domain
+- [x] Server-side syntax highlighting (Shiki) in a Paleday TextMate theme, for both
+      the worked examples and the READMEs — no highlighter in the client bundle
+- [x] Borderless card grid with project wordmarks and screenshots
+- [x] The real Basic Automation mark, inlined as SVG so it takes the theme colour
 
 ## Phase 1 — Content
 
 - [ ] Per-project Open Graph cards instead of one shared org card
-- [ ] Syntax highlighting for the worked examples (Shiki at build time, not in the client bundle)
 - [ ] A short changelog strip per project, from the GitHub releases API
 - [ ] Copy pass on `data/projects.ts` for Nisaba and Skidbladnir — both are thinner than the two crates
-- [ ] Screenshots for the two desktop apps; the pages are all type right now
+- [ ] Screenshots for Nisaba and Enlil — Skidbladnir has one, the rest are all type
 
 ## Phase 2 — Discovery
 

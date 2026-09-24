@@ -33,6 +33,34 @@ const snapshotRepos = (snapshot as { repos: Record<string, Omit<RepoMeta, 'sourc
 
 const marked = new Marked({ gfm: true, breaks: false, async: false })
 
+/**
+ * README code fences go through the same highlighter as the site's own
+ * examples, so a repo's code reads the same as the code beside it. Shiki is
+ * async to initialise, so fences are collected on the first pass and swapped in
+ * on a second — `marked` itself stays synchronous.
+ */
+async function renderMarkdown(md: string): Promise<string> {
+  const fences: { lang: string | undefined, code: string }[] = []
+
+  const collecting = new Marked({
+    gfm: true,
+    breaks: false,
+    async: false,
+    renderer: {
+      code({ text, lang }) {
+        fences.push({ lang, code: text })
+        return `\u0000FENCE${fences.length - 1}\u0000`
+      },
+    },
+  })
+
+  const html = collecting.parse(md) as string
+  if (!fences.length) return html
+
+  const rendered = await Promise.all(fences.map((f) => highlight(f.code, f.lang)))
+  return html.replace(/\u0000FENCE(\d+)\u0000/g, (_, i) => rendered[Number(i)] ?? '')
+}
+
 function token(): string {
   const config = useRuntimeConfig()
   return (config.githubToken as string) || ''
@@ -128,9 +156,9 @@ async function fetchRepo(project: Project): Promise<RepoMeta> {
   ])
 
   if (readme.status === 'fulfilled' && typeof readme.value === 'string') {
-    out.readmeHtml = marked.parse(
+    out.readmeHtml = await renderMarkdown(
       absolutize(stripLeadingLogo(readme.value), repo, defaultBranch),
-    ) as string
+    )
   }
 
   if (release.status === 'fulfilled' && release.value?.tag_name) {

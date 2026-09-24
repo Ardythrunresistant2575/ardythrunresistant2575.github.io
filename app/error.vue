@@ -8,14 +8,9 @@ useHead({ title: `${error.statusCode} — basic automation` })
 
 <template>
   <NuxtLayout>
-    <div class="mx-auto max-w-4xl px-5 py-24 sm:px-6">
-      <p class="text-xs text-pn-muted">
-        <span class="text-pn-accent">basic-automation</span>@github
-        <span class="text-pn-rule">:</span>~<span class="text-pn-rule">$</span> cat {{ $route.path }}
-      </p>
-
-      <p class="mt-8 text-sm text-pn-red">
-        {{ error.statusCode }}: {{ error.statusCode === 404 ? 'no such file or directory' : 'internal error' }}
+    <div class="mx-auto max-w-7xl px-5 py-24 sm:px-6">
+      <p class="text-xs tracking-[0.25em] text-pn-accent uppercase">
+        {{ error.statusCode }}
       </p>
 
       <h1 class="mt-6 text-2xl text-pn-fg-bright sm:text-3xl">

@@ -56,7 +56,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <article v-if="project" :style="accentVar(project.accent)" class="mx-auto max-w-4xl px-5 sm:px-6">
+  <article v-if="project" :style="accentVar(project.accent)" class="mx-auto max-w-7xl px-5 sm:px-6">
     <!-- ── Hero ─────────────────────────────────────────────────────────── -->
     <header class="pt-12 pb-16 sm:pt-16">
       <p class="text-xs text-pn-muted">
@@ -66,20 +66,24 @@ useSeoMeta({
         <span class="text-pn-rule"> / </span>{{ project.slug }}
       </p>
 
-      <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+      <!-- The wordmark IS the title on projects that have one, so it is set at
+           display scale rather than treated as a badge beside the name. -->
+      <div v-if="project.logo" class="mt-10">
         <img
-          v-if="project.logo"
           :src="project.logo"
           :alt="project.name"
-          class="h-11 w-auto sm:h-14"
+          class="h-24 w-auto max-w-full sm:h-36 lg:h-44"
         >
-        <h1 v-else class="text-3xl text-pn-fg-bright sm:text-4xl">
+        <StatusDot :status="project.status" class="mt-6" />
+      </div>
+      <div v-else class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3">
+        <h1 class="text-4xl text-pn-fg-bright sm:text-5xl">
           {{ project.name }}
         </h1>
         <StatusDot :status="project.status" />
       </div>
 
-      <p class="mt-9 max-w-2xl text-2xl leading-tight text-pn-fg-bright sm:text-4xl">
+      <p class="mt-9 max-w-4xl text-3xl leading-tight text-pn-fg-bright sm:text-5xl">
         {{ project.hero }}
       </p>
 
@@ -104,18 +108,28 @@ useSeoMeta({
       </nav>
     </header>
 
+    <!-- ── Screenshot ───────────────────────────────────────────────────── -->
+    <section v-if="project.screenshot" class="mb-32">
+      <TermRule label="screenshot" />
+      <img
+        :src="project.screenshot"
+        :alt="`${project.name} screenshot`"
+        class="mt-8 w-full max-w-5xl"
+      >
+    </section>
+
     <!-- ── Why ──────────────────────────────────────────────────────────── -->
-    <section class="mb-16">
+    <section class="mb-32">
       <TermRule label="why" />
-      <p class="mt-7 max-w-2xl text-base leading-relaxed text-pn-fg sm:text-lg">
+      <p class="mt-7 max-w-3xl text-base leading-relaxed text-pn-fg sm:text-lg">
         {{ project.problem }}
       </p>
     </section>
 
     <!-- ── Features ─────────────────────────────────────────────────────── -->
-    <section class="mb-16">
+    <section class="mb-32">
       <TermRule label="what you get" />
-      <div class="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2">
+      <div class="mt-8 grid max-w-6xl gap-x-14 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
         <div v-for="feature in project.features" :key="feature.title">
           <h2 class="text-sm text-pn-fg-bright">
             <span aria-hidden="true" :style="{ color: 'var(--accent)' }">▸ </span>{{ feature.title }}
@@ -128,13 +142,18 @@ useSeoMeta({
     </section>
 
     <!-- ── Example ──────────────────────────────────────────────────────── -->
-    <section v-if="project.example" class="mb-16">
+    <section v-if="project.example" class="mb-32">
       <TermRule label="in practice" />
-      <CodeBlock class="mt-8" :code="project.example.code" :label="project.example.label" />
+      <CodeBlock
+        class="mt-8 max-w-5xl"
+        :code="project.example.code"
+        :label="project.example.label"
+        :html="project.exampleHtml"
+      />
     </section>
 
     <!-- ── Facts ────────────────────────────────────────────────────────── -->
-    <section v-if="facts.length" class="mb-16">
+    <section v-if="facts.length" class="mb-32">
       <TermRule label="at a glance" />
       <dl class="mt-7 flex flex-wrap gap-x-8 gap-y-2 text-xs">
         <div v-for="fact in facts" :key="fact.label" class="flex items-baseline gap-2">
@@ -166,7 +185,7 @@ useSeoMeta({
         </summary>
         <!-- First-party content: the repo's own README, rendered at request time. -->
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="readme mt-8" v-html="meta.readmeHtml" />
+        <div class="readme mt-8 max-w-4xl" v-html="meta.readmeHtml" />
       </details>
     </section>
   </article>

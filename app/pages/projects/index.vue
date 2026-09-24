@@ -12,11 +12,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl px-5 sm:px-6">
+  <div class="mx-auto max-w-7xl px-5 sm:px-6">
     <section class="pt-14 pb-10">
-      <p class="text-xs text-pn-muted">
-        <span class="text-pn-accent">basic-automation</span>@github
-        <span class="text-pn-rule">:</span>~<span class="text-pn-rule">$</span> ls -l ./public
+      <p class="text-xs tracking-[0.25em] text-pn-accent uppercase">
+        Open source
       </p>
 
       <h1 class="mt-6 text-2xl text-pn-fg-bright sm:text-3xl">
@@ -30,8 +29,8 @@ useSeoMeta({
     </section>
 
     <TermRule />
-    <div class="mt-6 space-y-1">
-      <ProjectRow v-for="p in projects" :key="p.slug" :project="p" />
+    <div class="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2">
+      <ProjectCard v-for="p in projects" :key="p.slug" :project="p" />
     </div>
   </div>
 </template>

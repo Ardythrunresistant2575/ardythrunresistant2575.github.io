@@ -251,3 +251,49 @@ body {
 
 .readme img { max-width: 100%; height: auto; }
 .readme p img[src*="img.shields.io"] { display: inline-block; margin: 0.15rem 0.25rem 0.15rem 0; }
+
+/* ── Highlighted code ─────────────────────────────────────────────────────── */
+/* Shiki emits inline colours from the Paleday TextMate theme
+   (shared/theme/paleday-shiki.ts). Everything here is layout: the block sits on
+   the page's single ground, set off by its accent bar, never a filled box. */
+.code,
+.readme .shiki {
+  overflow-x: auto;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.code pre,
+.readme pre.shiki,
+.shiki {
+  background-color: transparent !important;
+  margin: 0;
+  padding: 0;
+}
+
+.code code,
+.shiki code {
+  font-family: var(--font-mono);
+  display: block;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* README fences keep their accent bar and spacing; the colours come from the
+   theme, so the blanket `pre` colour above must not override them. */
+.readme pre.shiki {
+  border-left: 2px solid var(--color-pn-rule);
+  padding: 0.35rem 0 0.35rem 1.25rem;
+  margin: 1.1rem 0;
+  color: inherit;
+  font-size: 0.8rem;
+}
+
+.readme pre.shiki code {
+  color: inherit;
+}
+
+/* Shiki wraps each line in a span; keep empty ones from collapsing. */
+.shiki .line {
+  min-height: 1.6em;
+}

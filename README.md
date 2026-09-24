@@ -3,6 +3,12 @@
 The public site for [Basic Automation](https://github.com/basic-automation) — a
 showcase for every open-source project the organization publishes.
 
+The framing throughout is **toolmaker**: Basic Automation designs and builds
+software tools for businesses, and publishes the sharp ones. An artificer makes
+the instruments other people work with, and is the first to use them. Copy should
+read that way — the projects are instruments with one job each, evidence of the
+work, not products with feature lists.
+
 Nuxt 4 with server-side rendering, Tailwind v4, and the **Paleday Tailwind**
 palette from the Omarchy theme set. One flat background, no cards, no borders,
 no rounded corners, Fira Code throughout: structure comes from rules and accent

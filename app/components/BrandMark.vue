@@ -1,11 +1,26 @@
 <script setup lang="ts">
 /**
- * The organization's mark, as it appears on github.com/basic-automation —
- * a black tile with the wordmark knocked out, so it needs no recolouring.
+ * The Basic Automation mark: an outlined square with the wordmark knocked
+ * through its lower edge. One colour, no fills of its own — it is inlined
+ * rather than loaded as an image so it inherits `currentColor` and takes
+ * whatever the theme gives it.
  */
-const { alt = '' } = defineProps<{ alt?: string }>()
+const { title = '' } = defineProps<{ title?: string }>()
 </script>
 
 <template>
-  <img src="/logo.png" :alt="alt" width="512" height="512" decoding="async">
+  <svg
+    :viewBox="'0 0 151.2 151.2'"
+    fill="currentColor"
+    :role="title ? 'img' : undefined"
+    :aria-hidden="title ? undefined : 'true'"
+  >
+    <title v-if="title">{{ title }}</title>
+    <path d="M23.6 148l.2-.7h-7.5l-.3.7z"/>
+    <path d="M2.7 2.2V148H8l.2-.7H3.4V2.9h144.4v144.4H31.9l-.3.7h116.9V2.2z"/>
+    <g>
+    <path d="M58 127.9c-2.8 0-4.4 2.1-4.5 6.1 0 4.2 1.5 6.5 4.4 6.5 3 .1 4.5-2.3 4.5-6.1.1-4.2-1.4-6.6-4.4-6.5zM79.6 132.3v4.7h2.9c.2 0 .3.1.3.3.1 2.3 1.7 3.4 4.5 3.4 2.4 0 3.8-.9 3.8-2.6.1-3.5-9.5-1.1-11.5-5.8zM71.3 127.8c-3.1 0-4.5 2.3-4.5 6.1 0 4.2 1.5 6.6 4.4 6.6 2.8 0 4.5-2.1 4.5-6.2 0-4.2-1.6-6.5-4.4-6.5zM94.2 130.6H91c-.2 0-.3-.1-.4-.3-.3-1.8-1.6-2.8-4-2.8-2.1 0-3.4.8-3.4 2.5 0 3.3 8.8 1.1 11.3 5.2V134l-.1-3.6c.1.2 0 .2-.2.2z"/>
+    <path d="M3.9 3.4v143.5h4.6L22.8 113c.1-.3.6-.5 1-.5h6.4c.4 0 .7.2.6.5l-14.4 33.8h7.5L38.4 113c.1-.3.6-.5 1-.5h6.4c.4 0 .7.2.6.5L32 146.8h115.2V3.4H3.9zm90.6 116.1c0-.2.2-.3.3-.3h3.6c.2 0 .3.2.3.3v3.5c0 .2-.2.3-.3.3h-3.6c-.2 0-.3-.2-.3-.3v-3.5zm12.1 24.1c-3.8 0-6.5-1.7-7.8-4.6v3.8c0 .2-.2.3-.3.3h-3.6c-.2 0-.3-.2-.3-.3v-2.3c-1.2 2-3.9 3.1-7.2 3.1-3.6 0-6.3-1.1-7.6-3.3v2.5c0 .2-.2.3-.3.3H76c-.2 0-.3-.2-.3-.3l.1-2.1c-1.2 1.8-3.1 2.8-5.5 2.8s-4.3-1-5.5-2.5c-1.3 1.6-3.2 2.5-5.5 2.5-2.4 0-4.2-.9-5.4-2.7l.1 2c0 .2-.2.3-.3.3h-3.6c-.2 0-.3-.2-.3-.3l.1-12.4-.1-11.3c0-.2.2-.3.3-.3h3.6c.2 0 .3.2.3.3v8.5c1.3-1.7 3.1-2.7 5.5-2.7s4.3 1 5.5 2.5c1.3-1.6 3.2-2.5 5.5-2.5 2.4 0 4.2.9 5.4 2.7l-.1-2c0-.2.2-.3.3-.3h3.6c.2 0 .3.2.3.3v2.6c1-2.2 3.5-3.4 7-3.4 4.3 0 7.4 1.8 7.8 5.3l-.1-4.5c0-.2.2-.3.3-.3h3.6c.2 0 .3.2.3.3v3.9c1.3-2.9 4.1-4.6 7.9-4.6 4.5 0 7.4 2.6 7.8 6.4 0 .2-.1.3-.3.3h-3.2c-.2 0-.4-.1-.4-.3-.4-2.3-1.9-3.4-3.9-3.4-3.1 0-4.5 2.2-4.5 6.4 0 4.3 1.5 6.4 4.5 6.4 2.2 0 3.8-1.4 4.1-3.9 0-.2.2-.3.4-.3h3.2c.2 0 .3.2.3.3-.5 3.9-3.6 6.8-8.2 6.8z"/>
+    </g>
+  </svg>
 </template>

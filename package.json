@@ -16,6 +16,7 @@
   "dependencies": {
     "marked": "^18.0.14",
     "nuxt": "^4.5.2",
+    "shiki": "^4.4.3",
     "vue": "^3.5.43",
     "vue-router": "^5.3.1"
   },

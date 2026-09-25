@@ -270,6 +270,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     slug: 'nisaba',
     repo: 'nisaba',
     name: 'Nisaba',
+    logo: '/projects/nisaba.svg',
     tagline: 'One product list that keeps every storefront you sell on in step',
     hero: 'One catalog. Every marketplace.',
     summary:

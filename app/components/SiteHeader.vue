@@ -26,7 +26,7 @@ const nav = [
 <template>
   <header
     class="sticky top-0 z-50 transition-colors duration-200"
-    :class="solid ? 'bg-pn-bg' : 'bg-transparent'"
+    :class="solid ? 'crt-glass' : 'bg-transparent'"
   >
     <div class="mx-auto flex h-32 max-w-7xl items-center gap-5 px-5 sm:px-6">
       <NuxtLink to="/" class="flex items-center" aria-label="Basic Automation — home">

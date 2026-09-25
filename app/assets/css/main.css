@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@nuxt/ui";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    basicautomation.io
@@ -56,6 +57,42 @@
 
   /* Square, everywhere. */
   --radius-none: 0px;
+}
+
+/* ── Nuxt UI, mapped onto Paleday ─────────────────────────────────────────── */
+/* The library is here for behaviour — focus management, keyboard handling,
+   ARIA — not for its looks. Its semantic slots are pointed at the theme's own
+   values so a component that styles itself lands on the house palette rather
+   than on Nuxt UI's defaults. Radius is zero because nothing here is rounded;
+   the global rule below enforces it anyway, this just stops the library
+   computing shadows and rings against a radius it will never get. */
+:root {
+  --ui-radius: 0rem;
+
+  --ui-bg: var(--color-pn-bg);
+  --ui-bg-muted: var(--color-pn-bg);
+  --ui-bg-elevated: var(--color-pn-bg);
+  --ui-bg-accented: var(--color-pn-bg);
+  --ui-bg-inverted: var(--color-pn-fg);
+
+  --ui-text-dimmed: var(--color-pn-muted);
+  --ui-text-muted: var(--color-pn-muted);
+  --ui-text-toned: var(--color-pn-dim);
+  --ui-text: var(--color-pn-fg);
+  --ui-text-highlighted: var(--color-pn-fg-bright);
+  --ui-text-inverted: var(--color-pn-bg);
+
+  --ui-border: var(--color-pn-rule);
+  --ui-border-muted: var(--color-pn-rule);
+  --ui-border-accented: var(--color-pn-rule);
+  --ui-border-inverted: var(--color-pn-fg);
+
+  --ui-primary: var(--color-pn-accent);
+  --ui-secondary: var(--color-pn-blue);
+  --ui-success: var(--color-pn-bright-green);
+  --ui-info: var(--color-pn-cyan);
+  --ui-warning: var(--color-pn-yellow);
+  --ui-error: var(--color-pn-red);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
@@ -312,46 +349,85 @@ body {
      position declared on this class would beat `.sticky` on the same element
      by source order and quietly unpin the masthead. Sticky already establishes
      the containing block the pseudo-elements below need. */
-  background-color: color-mix(in srgb, var(--color-pn-bg) 66%, transparent);
-  backdrop-filter: blur(7px) saturate(118%);
-  -webkit-backdrop-filter: blur(7px) saturate(118%);
+  background-color: color-mix(in srgb, var(--color-pn-bg) 58%, transparent);
+  backdrop-filter: blur(2px) saturate(118%);
+  -webkit-backdrop-filter: blur(2px) saturate(118%);
 }
 
-/* Scanlines, plus the faint bloom a curved tube throws at its top edge. */
+/* Where the browser can point backdrop-filter at an SVG filter, the backdrop
+   is displaced along the scanlines as well as blurred — the picture smears
+   sideways and never settles. Chrome and Firefox can; the blur above is what
+   everyone else gets. */
+@supports (backdrop-filter: url("#crt-warp")) {
+  .crt-glass {
+    backdrop-filter: blur(1.5px) saturate(118%) url("#crt-warp");
+  }
+}
+
+/* The phosphor grille. Full height of the glass, no fade — the lines are the
+   screen, not a decoration on it.
+
+   It carries the SAME filter as the backdrop, so the grille is displaced by
+   the same turbulence, on the same clock: the lines ripple in step with the
+   picture rather than sitting flat on top of a moving image. That is what a
+   real tube does — the raster IS the picture, so whatever bends one bends
+   both. Referencing one animated filter from both places is what keeps them
+   in sync; two filters would drift apart. */
 .crt-glass::after {
   content: "";
   position: absolute;
-  inset: 0;
+  /* Overdrawn past the edges so the displacement pulls grille into view rather
+     than pulling it away and leaving a bare margin. */
+  inset: -24px -32px;
   pointer-events: none;
+  z-index: 1;
+  filter: url("#crt-warp");
   background-image:
     repeating-linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-pn-fg) 10%, transparent) 0 1px,
+      color-mix(in srgb, var(--color-pn-fg) 16%, transparent) 0 1px,
       transparent 1px 3px
     ),
     linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-pn-fg-bright) 22%, transparent) 0,
-      transparent 40%
+      color-mix(in srgb, var(--color-pn-fg-bright) 20%, transparent) 0,
+      transparent 42%
     );
 }
 
-/* The glass has an edge. A hairline of accent where it meets the page, which
-   is also the only thing separating the nav from content once it is lit. */
+/* The glass has an edge: a hairline of accent where it meets the page. */
 .crt-glass::before {
   content: "";
   position: absolute;
   inset-inline: 0;
   bottom: 0;
   height: 1px;
+  z-index: 2;
   pointer-events: none;
   background: linear-gradient(
     to right,
     transparent,
-    color-mix(in srgb, var(--color-pn-accent) 45%, transparent) 18%,
-    color-mix(in srgb, var(--color-pn-accent) 45%, transparent) 82%,
+    color-mix(in srgb, var(--color-pn-accent) 50%, transparent) 16%,
+    color-mix(in srgb, var(--color-pn-accent) 50%, transparent) 84%,
     transparent
   );
+}
+
+/* The masthead's own content sits above the grille, not behind it. */
+.crt-glass > * {
+  position: relative;
+  z-index: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-glass {
+    backdrop-filter: blur(2px) saturate(118%);
+    -webkit-backdrop-filter: blur(2px) saturate(118%);
+  }
+  .crt-glass::after {
+    inset: 0;
+    filter: none;
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {

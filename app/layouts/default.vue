@@ -11,7 +11,7 @@ const onHome = computed(() => route.path === '/' || route.path === '')
  */
 const FADE = [
   'linear-gradient(to bottom, black 0%, black 52%, transparent 100%)',
-  'linear-gradient(to right, transparent 0%, transparent 46%, black 78%)',
+  'linear-gradient(to right, transparent 0%, transparent 34%, black 62%)',
 ].join(', ')
 </script>
 
@@ -23,11 +23,11 @@ const FADE = [
     <div
       v-if="onHome"
       aria-hidden="true"
-      class="pointer-events-none absolute inset-x-0 top-0 h-[34rem] bg-no-repeat sm:h-[42rem]"
+      class="pointer-events-none absolute inset-x-0 top-0 h-[32rem] bg-no-repeat sm:h-[40rem]"
       :style="{
         backgroundImage: 'url(/bg/hero.webp)',
-        backgroundSize: 'auto 88%',
-        backgroundPosition: '104% 26%',
+        backgroundSize: 'auto 100%',
+        backgroundPosition: 'right center',
         maskImage: FADE,
         WebkitMaskImage: FADE,
         maskComposite: 'intersect',
@@ -35,7 +35,8 @@ const FADE = [
       }"
     />
 
-    <SiteHeader :transparent="onHome" />
+    <CrtFilter />
+    <SiteHeader />
     <main class="relative flex-1">
       <slot />
     </main>

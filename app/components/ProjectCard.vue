@@ -14,25 +14,25 @@ const { project } = defineProps<{ project: EnrichedProject }>()
          and the project's name set large when there is neither — the point is
          that every card occupies the same block so the grid stays even. No
          frame, no fill: the media sits straight on the page's ground. -->
-    <div class="flex aspect-16/10 items-center justify-center overflow-hidden">
+    <div class="relative aspect-16/10 overflow-hidden">
       <img
         v-if="project.screenshot"
         :src="project.screenshot"
         :alt="`${project.name} screenshot`"
         loading="lazy"
-        class="h-full w-full object-cover object-top transition-opacity duration-300 group-hover:opacity-90"
+        class="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-300 group-hover:opacity-90"
       >
       <img
         v-else-if="project.logo"
         :src="project.logo"
         :alt="project.name"
         loading="lazy"
-        class="max-h-[62%] max-w-[78%] object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+        class="absolute inset-0 h-full w-full object-contain p-10 transition-transform duration-300 group-hover:scale-[1.03] sm:p-14"
       >
       <span
         v-else
         aria-hidden="true"
-        class="text-4xl text-pn-rule transition-colors duration-300 group-hover:text-[var(--accent)] sm:text-5xl"
+        class="absolute inset-0 flex items-center justify-center text-4xl text-pn-rule transition-colors duration-300 group-hover:text-[var(--accent)] sm:text-5xl"
       >{{ project.name }}</span>
     </div>
 
